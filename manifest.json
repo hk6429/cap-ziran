@@ -1,0 +1,9 @@
+{
+  "name": "自然科練功房 — 國中會考自然題庫",
+  "short_name": "自然練功房",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f4f1fd",
+  "theme_color": "#6d28d9",
+  "icons": []
+}

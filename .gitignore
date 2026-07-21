@@ -1,0 +1,11 @@
+.vercel
+
+# Local Netlify folder
+.netlify
+
+# Cloudflare Wrangler
+.wrangler
+
+# Source PDFs (copyrighted exam booklets) and scratch files — not for public repo
+.sources
+tmp
