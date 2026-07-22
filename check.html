@@ -41,7 +41,7 @@ kbd{background:var(--ink); color:var(--paper); border-radius:4px; padding:1px 6p
 <body>
 <div class="wrap">
   <h1>查題校對系統 <a href="index.html" style="font-size:.8rem;font-weight:400;margin-left:8px">← 回題庫首頁</a></h1>
-  <div class="hint">輸入「年份-題號」直接查題，支援 <kbd>115-1</kbd> <kbd>115-42</kbd> 各種寫法；基測有兩場次的年份請用「年-場次-題號」，例如 <kbd>96-2-15</kbd>。按 Enter 或「查」即可。目前收錄會考 104～115 年、基測 92～102 年，共 32 卷 1788 題。</div>
+  <div class="hint">輸入「年份-題號」直接查題，支援 <kbd>115-1</kbd> <kbd>115-42</kbd> 各種寫法；基測有兩場次的年份請用「年-場次-題號」，例如 <kbd>96-2-15</kbd>。按 Enter 或「查」即可。目前收錄會考 103～115 年、基測 92～102 年，共 33 卷 1842 題。</div>
   <div class="bar">
     <input id="q" placeholder="例：115-1、105-33、96-2-15" autocomplete="off" autofocus>
     <button id="go">查</button>
@@ -60,6 +60,7 @@ kbd{background:var(--ink); color:var(--paper); border-radius:4px; padding:1px 6p
 <script src="data/q106.js"></script>
 <script src="data/q105.js"></script>
 <script src="data/q104.js"></script>
+<script src="data/q103.js"></script>
 <script src="data/q102.js"></script>
 <script src="data/q101.js"></script>
 <script src="data/q10002.js"></script>
@@ -153,7 +154,7 @@ function render(target){
   const banks = (window.BANK||[]).filter(b=>b.year===r.year);
   let bank;
   if(banks.length===0){
-    out.innerHTML = '<div class="err">題庫沒有 '+r.year+' 年（目前收錄會考 104～115 年、基測 92～102 年）。</div>';
+    out.innerHTML = '<div class="err">題庫沒有 '+r.year+' 年（目前收錄會考 103～115 年、基測 92～102 年）。</div>';
     return;
   } else if(banks.length===1){
     bank = banks[0];
