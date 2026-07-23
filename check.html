@@ -41,7 +41,7 @@ kbd{background:var(--ink); color:var(--paper); border-radius:4px; padding:1px 6p
 <body>
 <div class="wrap">
   <h1>查題校對系統 <a href="index.html" style="font-size:.8rem;font-weight:400;margin-left:8px">← 回題庫首頁</a></h1>
-  <div class="hint">輸入「年份-題號」直接查題，支援 <kbd>115-1</kbd> <kbd>115-42</kbd> 各種寫法；基測有兩場次的年份請用「年-場次-題號」，例如 <kbd>96-2-15</kbd>。按 Enter 或「查」即可。目前收錄會考 103～115 年、基測 92～102 年，共 33 卷 1842 題。</div>
+  <div class="hint">輸入「年份-題號」直接查題，支援 <kbd>115-1</kbd> <kbd>115-42</kbd> 各種寫法；基測有兩場次的年份請用「年-場次-題號」，例如 <kbd>96-2-15</kbd>。按 Enter 或「查」即可。目前收錄會考 103～115 年、基測 90～102 年，共 37 卷 2071 題。</div>
   <div class="bar">
     <input id="q" placeholder="例：115-1、105-33、96-2-15" autocomplete="off" autofocus>
     <button id="go">查</button>
@@ -81,6 +81,10 @@ kbd{background:var(--ink); color:var(--paper); border-radius:4px; padding:1px 6p
 <script src="data/q9301.js"></script>
 <script src="data/q9202.js"></script>
 <script src="data/q9201.js"></script>
+<script src="data/q9102.js"></script>
+<script src="data/q9101.js"></script>
+<script src="data/q9002.js"></script>
+<script src="data/q9001.js"></script>
 <script>
 const out = document.getElementById('out');
 const input = document.getElementById('q');
