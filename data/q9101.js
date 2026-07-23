@@ -290,7 +290,7 @@ window.BANK.push({
    "no": 16,
    "cat": "N2",
    "tags": [
-    "生殖方式"
+    "生物的分類"
    ],
    "skill": "圖表判讀",
    "answer": "D",
@@ -413,7 +413,7 @@ window.BANK.push({
    "no": 23,
    "cat": "N8",
    "tags": [
-    "大氣分層"
+    "大氣組成與演化"
    ],
    "skill": "資料解讀與推論",
    "answer": "B",
@@ -839,7 +839,7 @@ window.BANK.push({
    "no": 47,
    "cat": "N6",
    "tags": [
-    "牛頓運動定律"
+    "速度與加速度"
    ],
    "skill": "圖表判讀",
    "answer": "A",

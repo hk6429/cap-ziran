@@ -317,7 +317,7 @@ window.BANK.push({
    "no": 18,
    "cat": "N1",
    "tags": [
-    "消化與酵素"
+    "營養與健康"
    ],
    "skill": "圖表判讀",
    "answer": "D",
@@ -335,7 +335,7 @@ window.BANK.push({
    "no": 19,
    "cat": "N6",
    "tags": [
-    "牛頓運動定律"
+    "速度與加速度"
    ],
    "skill": "圖表判讀",
    "answer": "B",
@@ -674,9 +674,9 @@ window.BANK.push({
   },
   {
    "no": 38,
-   "cat": "N1",
+   "cat": "N2",
    "tags": [
-    "植物的構造與運輸"
+    "生物的分類"
    ],
    "skill": "圖表判讀",
    "answer": "A",

@@ -1,3 +1,4 @@
+window.BANK = window.BANK || [];
 window.BANK.push({
  "year": 103,
  "era": "會考",
@@ -279,7 +280,7 @@ window.BANK.push({
    "no": 13,
    "cat": "N6",
    "tags": [
-    "牛頓運動定律"
+    "速度與加速度"
    ],
    "skill": "圖表判讀",
    "answer": "D",
@@ -960,7 +961,7 @@ window.BANK.push({
    "no": 47,
    "cat": "N1",
    "tags": [
-    "排泄與恆定"
+    "激素與內分泌"
    ],
    "skill": "圖表判讀",
    "answer": "D",
@@ -986,7 +987,7 @@ window.BANK.push({
    "no": 48,
    "cat": "N1",
    "tags": [
-    "排泄與恆定"
+    "激素與內分泌"
    ],
    "skill": "資料解讀與推論",
    "answer": "B",

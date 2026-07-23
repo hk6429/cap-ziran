@@ -53,7 +53,7 @@ window.BANK.push({
    "no": 3,
    "cat": "N1",
    "tags": [
-    "植物的構造與運輸"
+    "激素與內分泌"
    ],
    "skill": "概念應用",
    "answer": "A",
@@ -351,7 +351,7 @@ window.BANK.push({
    "no": 20,
    "cat": "N2",
    "tags": [
-    "演化與天擇"
+    "生物的分類"
    ],
    "skill": "概念應用",
    "answer": "A",
@@ -538,7 +538,7 @@ window.BANK.push({
    "no": 30,
    "cat": "N2",
    "tags": [
-    "生殖方式"
+    "生物的分類"
    ],
    "skill": "資料解讀與推論",
    "answer": "A",
@@ -869,7 +869,7 @@ window.BANK.push({
    "no": 49,
    "cat": "N1",
    "tags": [
-    "排泄與恆定"
+    "營養與健康"
    ],
    "skill": "概念應用",
    "answer": "B",
@@ -994,7 +994,7 @@ window.BANK.push({
    "no": 56,
    "cat": "N6",
    "tags": [
-    "牛頓運動定律"
+    "速度與加速度"
    ],
    "skill": "圖表判讀",
    "answer": "C",
