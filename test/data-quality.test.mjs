@@ -20,7 +20,7 @@ test("37 卷 2071 題沒有缺圖或空白選項", () => {
   assert.equal(questions.length, 2071);
 
   for (const { bank, ...question } of questions) {
-    if (question.image && !fs.existsSync(path.join(root, question.image))) missingImages.push(question.image);
+    if (question.image && !fs.existsSync(path.join(root, question.image.split("?")[0]))) missingImages.push(question.image);
     for (const file of Object.values(question.optImages || {})) {
       if (file && !fs.existsSync(path.join(root, file))) missingImages.push(file);
     }
@@ -53,3 +53,8 @@ test("97 年第二次第 54～58 題兩張共用圖均為完整尺寸", () => {
   assert.ok(g57.width >= 650 && g57.height >= 500, JSON.stringify(g57));
 });
 
+test("92 年第二次第 36 題使用完整且清楚的實驗流程圖", () => {
+  const image = pngSize("img/9202/q36.png");
+  assert.ok(image.width >= 600 && image.height >= 160, JSON.stringify(image));
+  assert.ok(fs.statSync(path.join(root, "img/9202/q36.png")).size < 40_000);
+});

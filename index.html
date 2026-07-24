@@ -136,6 +136,20 @@
   .opt-group-toggle button.active{background:var(--accent); border-color:var(--accent); color:#fff}
   .opt-source-note,.opt-lure-note{font-size:.76rem; color:var(--muted); margin-top:6px}
   .opt-lure-note{color:#8a4b12}
+  .report-wrap{margin-top:12px; padding-top:10px; border-top:1px dashed var(--line)}
+  .report-toggle{border:0; background:transparent; color:var(--accent2); text-decoration:underline; text-underline-offset:3px; cursor:pointer; font:inherit; padding:4px 0}
+  .report-form{display:none; margin-top:8px; padding:10px; background:var(--card); border:1px solid var(--line); border-radius:8px; color:var(--ink)}
+  .report-form.open{display:block}
+  .report-form label{display:block; margin-bottom:8px; font-weight:600}
+  .report-form select,.report-form textarea{display:block; width:100%; margin-top:4px; font:inherit; color:var(--ink); background:#f0ebfd; border:1px solid var(--line); border-radius:8px; padding:8px}
+  .report-form textarea{min-height:88px; resize:vertical}
+  .report-actions{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+  .report-submit{border:1px solid var(--accent2); background:var(--accent); color:#fff; border-radius:8px; padding:8px 14px; font:inherit; cursor:pointer}
+  .report-submit:disabled{opacity:.6; cursor:wait}
+  .report-status{font-size:.8rem; color:var(--muted)}
+  .report-status.ok{color:var(--ok)}
+  .report-status.bad{color:var(--bad)}
+  .report-hp{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden}
   .passtag{display:inline-flex; align-items:center; gap:5px; white-space:nowrap}
   .passbar{display:inline-block; width:44px; height:8px; background:#dcd0f6; border-radius:4px; overflow:hidden}
   .passbar i{display:block; height:100%; border-radius:4px}
@@ -417,7 +431,7 @@
 <script src="data/q9401.js?v=20260724-natural-analysis"></script>
 <script src="data/q9302.js?v=20260724-natural-analysis"></script>
 <script src="data/q9301.js?v=20260724-natural-analysis"></script>
-<script src="data/q9202.js?v=20260724-natural-analysis"></script>
+<script src="data/q9202.js?v=20260725-report-image"></script>
 <script src="data/q9201.js?v=20260724-natural-analysis"></script>
 <script src="data/q9102.js?v=20260724-natural-analysis"></script>
 <script src="data/q9101.js?v=20260724-natural-analysis"></script>
@@ -426,6 +440,7 @@
 <script src="data/answer-distributions.js?v=natural-stats-20260724"></script>
 <script src="data/timing.js?v=natural-timing-20260724"></script>
 <script src="js/year-filter.js?v=multi-year-20260724"></script>
+<script src="js/report-client.js?v=telegram-report-20260725"></script>
 <script>
 document.addEventListener("DOMContentLoaded", ()=>{
 function safeSet(k, v){ try{ localStorage["setItem"](k, v); }catch(e){} }
@@ -469,8 +484,31 @@ function optionDistributionHtml(q){
   const lureNote = lure && lure.gap>0 ? `<div class="opt-lure-note">⚠ 待加強組有 ${lure.low.toFixed(1)}% 選（${lure.option}），比全體高 ${lure.gap.toFixed(1)} 個百分點 → 這題的關鍵迷思在（${lure.option}）</div>` : "";
   return `<div class="opt-stats" data-qid="${q.id}"><b class="opt-chart-title">全體考生四選項作答分布</b>${toggle}<div class="opt-chart">${optionDistributionRows(q)}</div><div class="opt-source-note" data-opt-source>來源：${allSource}；未作答與複選未列入，四項合計可能略低於 100%。</div>${lureNote}</div>`;
 }
+function reportFormHtml(q){
+  return `<div class="report-wrap"><button type="button" class="report-toggle" data-report-qid="${q.id}" aria-expanded="false">🚩 這題有問題？回報給老師</button>
+    <form class="report-form" data-report-form="${q.id}">
+      <label>問題類型
+        <select name="issueType" required>
+          <option value="解析不清楚">解析不清楚</option>
+          <option value="答案或選項有疑問">答案或選項有疑問</option>
+          <option value="圖片或表格有缺漏">圖片或表格有缺漏</option>
+          <option value="題目文字或劃線有誤">題目文字或劃線有誤</option>
+          <option value="其他">其他</option>
+        </select>
+      </label>
+      <label>請告訴老師哪裡需要修正（選填）
+        <textarea name="note" maxlength="800" placeholder="例如：流程圖右側被截掉，看不到實驗結果。"></textarea>
+      </label>
+      <label class="report-hp" aria-hidden="true">網站<input name="website" tabindex="-1" autocomplete="off"></label>
+      <div class="report-actions">
+        <button type="submit" class="report-submit">送出回報</button>
+        <span class="report-status" role="status" aria-live="polite"></span>
+      </div>
+    </form>
+  </div>`;
+}
 function explanationHtml(q, heading){
-  return `<b>${heading}</b><br>${q.explain||""}${optionDistributionHtml(q)}`;
+  return `<b>${heading}</b><br>${q.explain||""}${optionDistributionHtml(q)}${reportFormHtml(q)}`;
 }
 
 // 攤平題庫（單一年份，但保留跨年份擴充彈性）
@@ -852,6 +890,14 @@ function revealAnswers(){
   });
 }
 document.addEventListener("click", e=>{
+  const reportButton = e.target.closest(".report-toggle");
+  if(reportButton){
+    const form = reportButton.closest(".report-wrap")?.querySelector(".report-form");
+    const open = form?.classList.toggle("open");
+    reportButton.setAttribute("aria-expanded", String(Boolean(open)));
+    if(open) form.querySelector("select")?.focus();
+    return;
+  }
   const button = e.target.closest("[data-opt-group]");
   if(!button) return;
   const box = button.closest(".opt-stats");
@@ -867,6 +913,36 @@ document.addEventListener("click", e=>{
     item.classList.toggle("active", active);
     item.setAttribute("aria-pressed", String(active));
   });
+});
+document.addEventListener("submit", async e=>{
+  const form = e.target.closest(".report-form");
+  if(!form) return;
+  e.preventDefault();
+  const qid = form.dataset.reportForm;
+  const q = ALL.find(item=>item.id===qid);
+  const status = form.querySelector(".report-status");
+  const submit = form.querySelector(".report-submit");
+  if(!q || !status || !submit) return;
+  submit.disabled = true;
+  status.className = "report-status";
+  status.textContent = "正在送出…";
+  const data = new FormData(form);
+  try{
+    await CAP_ZIRAN_REPORT.submit({
+      questionId:q.id, year:q.year, sitting:sittingLabelOf(q), era:q.era, no:q.no,
+      category:CATS[q.cat]||q.cat, stem:plainText(q.stem), answer:correctKeys(q).join("、"),
+      picked:answered[q.id]||"", issueType:data.get("issueType"), note:data.get("note"),
+      website:data.get("website"), url:location.href
+    }, location);
+    status.className = "report-status ok";
+    status.textContent = "已送給老師，謝謝你協助校對！";
+    form.querySelector("textarea").value = "";
+  }catch(error){
+    status.className = "report-status bad";
+    status.textContent = error.message || "回報暫時無法送出";
+  }finally{
+    submit.disabled = false;
+  }
 });
 function stopTimer(){ if(timerId){ clearInterval(timerId); timerId = null; } }
 function startTimer(seconds){

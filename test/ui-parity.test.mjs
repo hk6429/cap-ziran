@@ -37,4 +37,6 @@ test("解析區顯示全體與待加強四選項分布及迷思提示", () => {
 test("題庫檔案帶版本參數，部署後不會沿用舊解析快取", () => {
   assert.match(html, /data\/q103\.js\?v=20260724-natural-analysis/);
   assert.match(html, /data\/q114\.js\?v=20260724-natural-analysis/);
+  assert.match(html, /data\/q9202\.js\?v=20260725-report-image/);
+  assert.match(html, /js\/report-client\.js\?v=telegram-report-20260725/);
 });
