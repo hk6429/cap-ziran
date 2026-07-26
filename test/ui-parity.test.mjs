@@ -27,6 +27,14 @@ test("首頁與排行榜均提供鑑別度篩選", () => {
   assert.match(html, /value="discLow10"/);
 });
 
+test("一般練習可依做題紀錄篩選，並顯示已做題數", () => {
+  for (const id of ["doneSel", "clearDoneBtn", "doneInfo"]) {
+    assert.match(html, new RegExp(`id="${id}"`), `缺少 #${id}`);
+  }
+  assert.match(html, /只出未做過/);
+  assert.match(html, /js\/question-progress\.js\?v=done-filter-20260726/);
+});
+
 test("解析區顯示全體與待加強四選項分布及迷思提示", () => {
   assert.match(html, /data-opt-group="all"/);
   assert.match(html, /data-opt-group="low"/);

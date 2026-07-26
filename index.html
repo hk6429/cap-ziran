@@ -302,10 +302,13 @@
       <label><input type="checkbox" id="timedChk"> 計時模式（<span id="timingHint">依各年度實際題數換算，約 80～90 秒／題</span>）</label>
       <label>難度：<select id="diffSel"><option value="all">不限</option><option value="easy">較簡單（通過率≥70%）</option><option value="mid">中等（40–70%）</option><option value="hard">較難（&lt;40%）</option></select></label>
       <label>鑑別度：<select id="discSel"><option value="all">不限</option><option value="high">高（≥0.5）</option><option value="mid">中（0.3–0.5）</option><option value="low">低（&lt;0.3）</option></select></label>
+      <label>做題紀錄：<select id="doneSel"><option value="all">全部題目</option><option value="unseen">只出未做過</option><option value="seen">只出做過</option></select></label>
+      <button class="btn btn-sub" id="clearDoneBtn" type="button">清除做題紀錄</button>
       <label><input type="checkbox" id="diffSortChk"> 由易到難排序</label>
     </div>
     <div class="count" style="margin-top:0">難度依心測中心公布之各題通過率分級，僅會考 103～115 年有官方數字，共 <span id="diffCoverage"></span> 題；基測年份官方未公布逐題通過率，選了難度條件就不會出現基測題目。</div>
     <div class="count" id="countInfo"></div>
+    <div class="count" id="doneInfo" aria-live="polite"></div>
     </div>
     <div class="row">
       <button class="btn btn-outline" id="startBtn">開始練習</button>
@@ -440,6 +443,7 @@
 <script src="data/answer-distributions.js?v=natural-stats-20260724"></script>
 <script src="data/timing.js?v=natural-timing-20260724"></script>
 <script src="js/year-filter.js?v=multi-year-20260724"></script>
+<script src="js/question-progress.js?v=done-filter-20260726"></script>
 <script src="js/report-client.js?v=telegram-report-20260725"></script>
 <script>
 document.addEventListener("DOMContentLoaded", ()=>{
@@ -508,7 +512,10 @@ function reportFormHtml(q){
   </div>`;
 }
 function explanationHtml(q, heading){
-  return `<b>${heading}</b><br>${q.explain||""}${optionDistributionHtml(q)}${reportFormHtml(q)}`;
+  return `<b>${heading}</b><br>${richExplain(q.explain)}${optionDistributionHtml(q)}${reportFormHtml(q)}`;
+}
+function richExplain(value){
+  return String(value||"").replace(/&(?:amp;)*lt;(\/?)(b|br)&(?:amp;)*gt;/gi,"<$1$2>");
 }
 
 // 攤平題庫（單一年份，但保留跨年份擴充彈性）
@@ -522,6 +529,16 @@ const ALL = [];
 });
 
 const $ = id => document.getElementById(id);
+let completedIds = window.CAP_ZIRAN_PROGRESS.load(localStorage);
+function doneMode(){ return $("doneSel").value; }
+function updateDoneInfo(){
+  const el = $("doneInfo");
+  if(el) el.textContent = `已做過 ${completedIds.size} 題`;
+}
+function markQuestionDone(id){
+  completedIds = window.CAP_ZIRAN_PROGRESS.mark(localStorage, id);
+  updateDoneInfo();
+}
 
 // ---- 年份／場次清單（供整回模考、出卷模式快速勾選使用） ----
 function sittingLabelOf(bank){ return bank.sitting==="first" ? "第一次" : bank.sitting==="second" ? "第二次" : ""; }
@@ -712,18 +729,20 @@ function inDiscRange(q, value=$("discSel").value){
 }
 function pool(){
   const selectedBanks = selectedBankKeys();
-  return ALL.filter(q => {
+  const list = ALL.filter(q => {
     const wl = SUBCATS[q.cat]||[];
     const knownTags = (q.tags||[]).filter(t=>wl.includes(t));
     const catOK = knownTags.length ? knownTags.some(t=>activeSubs.has(q.cat+"::"+t)) : catActive(q.cat);
     const bankOK = window.CAP_YEAR_FILTER.matches(bankKey(q), selectedBanks);
     return catOK && bankOK && inDiffRange(q) && inDiscRange(q);
   });
+  return window.CAP_ZIRAN_PROGRESS.filter(list, completedIds, doneMode());
 }
-function updateCount(){ $("countInfo").textContent = `符合條件共 ${pool().length} 題（題庫總計 ${ALL.length} 題）`; }
+function updateCount(){ $("countInfo").textContent = `符合條件共 ${pool().length} 題（題庫總計 ${ALL.length} 題）`; updateDoneInfo(); }
 $("diffCoverage").textContent = ALL.filter(q=>q.pass!=null).length;
 $("diffSel").onchange = ()=>{ updateCount(); updateFilterSummary(); };
 $("discSel").onchange = ()=>{ updateCount(); updateFilterSummary(); };
+$("doneSel").onchange = ()=>{ updateCount(); updateFilterSummary(); };
 function handleBankSelectionChange(){
   $("bankSummary").textContent = bankSelectionSummary();
   updateCount();
@@ -779,7 +798,8 @@ function updateFilterSummary(){
     `每次 ${Number($("numInput").value)||10} 題`,
     $("diffSortChk").checked ? "由易到難" : ($("shuffleChk").checked ? "隨機出題" : "依序出題"),
     d.value==="all" ? "難度不限" : d.options[d.selectedIndex].textContent,
-    disc.value==="all" ? "鑑別度不限" : `鑑別度${disc.options[disc.selectedIndex].textContent}`
+    disc.value==="all" ? "鑑別度不限" : `鑑別度${disc.options[disc.selectedIndex].textContent}`,
+    doneMode()==="all" ? "做題紀錄不限" : $("doneSel").options[$("doneSel").selectedIndex].textContent
   ];
   el.textContent = items.join(" ・ ");
 }
@@ -833,6 +853,7 @@ function renderQ(q, idx, opts={}){
         if(answered[q.id]) return;
         const picked = el.dataset.k;
         answered[q.id] = picked;
+        markQuestionDone(q.id);
         div.querySelectorAll(".opt").forEach(o=>o.classList.add("locked"));
         if(opts.defer){
           el.classList.add("picked-neutral");
@@ -1056,7 +1077,9 @@ $("quickStartBtn").onclick = ()=>{
   activeSubs.clear();
   Object.entries(SUBCATS).forEach(([cat,subs])=>subs.forEach(s=>activeSubs.add(cat+"::"+s)));
   syncChips();
-  startQuiz(shuffle(ALL).slice(0, 10));
+  const list = pool();
+  if(!list.length){ alert("目前沒有符合條件的題目，請切換做題紀錄篩選"); return; }
+  startQuiz(shuffle(list).slice(0, 10));
 };
 $("submitBtn").onclick = endQuiz;
 $("backBtn").onclick = backToFilter;
@@ -1147,7 +1170,7 @@ function catStatLine(qs){
 function detailAnswerHtml(qs){
   return `<h2>教師詳解卷</h2>`+qs.map((q,i)=>
     `<div class="dq"><b>${i+1}. ${q.stem}</b>　<span class="dans">正解：${q.answer}</span>`+
-    `<div class="dexp">${q.explain || "解析製作中，之後會補上"}</div></div>`
+    `<div class="dexp">${richExplain(q.explain || "解析製作中，之後會補上")}</div></div>`
   ).join("");
 }
 
@@ -1392,15 +1415,21 @@ $("historyBtn").onclick = ()=>{
 $("historyCloseBtn").onclick = ()=>{ $("historyPanel").style.display="none"; };
 $("clearBtn").onclick = ()=>{
   if(!confirm("確定要清除本機所有練習紀錄與錯題本嗎？此動作無法復原。")) return;
-  safeSet(WRONGBOOK_KEY, "{}"); safeSet(HISTORY_KEY, "[]");
+  safeSet(WRONGBOOK_KEY, "{}"); safeSet(HISTORY_KEY, "[]"); safeSet(window.CAP_ZIRAN_PROGRESS.KEY, "[]");
   wrongBook = {}; updateWrongCount(); renderHistory();
+  completedIds = new Set(); updateCount(); updateFilterSummary();
+};
+$("clearDoneBtn").onclick = ()=>{
+  if(!confirm("確定要清除已做過題目的紀錄嗎？錯題本與學習歷程不會受影響。")) return;
+  safeSet(window.CAP_ZIRAN_PROGRESS.KEY, "[]");
+  completedIds = new Set(); updateCount(); updateFilterSummary();
 };
 $("exportBtn").onclick = ()=>{
-  const data = { wrongBook, history: loadHistory(), exportedAt: Date.now() };
+  const data = { wrongBook, history: loadHistory(), completedQuestionIds:[...completedIds], exportedAt: Date.now() };
   const blob = new Blob([JSON.stringify(data,null,2)], {type:"application/json"});
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
-  a.href = url; a.download = "cap-english-progress.json"; a.click();
+  a.href = url; a.download = "cap-ziran-progress.json"; a.click();
   URL.revokeObjectURL(url);
 };
 $("importBtn").onclick = ()=>{ $("importFile").click(); };
@@ -1417,7 +1446,9 @@ $("importFile").onchange = (e)=>{
         const merged = [...h, ...data.history].sort((a,b)=>a.ts-b.ts);
         safeSet(HISTORY_KEY, JSON.stringify(merged.slice(-30)));
       }
+      if(Array.isArray(data.completedQuestionIds)) completedIds = window.CAP_ZIRAN_PROGRESS.merge(localStorage, data.completedQuestionIds);
       updateWrongCount(); renderHistory();
+      updateCount(); updateFilterSummary();
       alert("匯入完成！");
     }catch(err){ alert("匯入失敗，檔案格式不正確"); }
   };
