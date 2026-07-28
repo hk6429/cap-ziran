@@ -61,10 +61,10 @@ test("92 年第二次第 36 題使用完整且清楚的實驗流程圖", () => {
 
 test("消化主題回報的四張表格圖均保留完整資料", () => {
   const expectedMinimums = {
-    "img/112/g43.png": { width: 1800, height: 550 },
-    "img/10001/q08.png": { width: 1400, height: 440 },
-    "img/10001/g53.png": { width: 1800, height: 900 },
-    "img/9302/g56.png": { width: 1700, height: 1000 },
+    "img/112/g43-20260728.png": { width: 1800, height: 550 },
+    "img/10001/q08-20260728.png": { width: 1400, height: 440 },
+    "img/10001/g53-20260728.png": { width: 1800, height: 900 },
+    "img/9302/g56-20260728.png": { width: 1700, height: 1000 },
   };
 
   for (const [file, minimum] of Object.entries(expectedMinimums)) {
