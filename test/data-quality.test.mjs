@@ -58,3 +58,30 @@ test("92 年第二次第 36 題使用完整且清楚的實驗流程圖", () => {
   assert.ok(image.width >= 600 && image.height >= 160, JSON.stringify(image));
   assert.ok(fs.statSync(path.join(root, "img/9202/q36.png")).size < 40_000);
 });
+
+test("消化主題回報的四張表格圖均保留完整資料", () => {
+  const expectedMinimums = {
+    "img/112/g43.png": { width: 1800, height: 550 },
+    "img/10001/q08.png": { width: 1400, height: 440 },
+    "img/10001/g53.png": { width: 1800, height: 900 },
+    "img/9302/g56.png": { width: 1700, height: 1000 },
+  };
+
+  for (const [file, minimum] of Object.entries(expectedMinimums)) {
+    const image = pngSize(file);
+    assert.ok(
+      image.width >= minimum.width && image.height >= minimum.height,
+      `${file}: ${JSON.stringify(image)}`,
+    );
+  }
+});
+
+test("110 年第 42 題逐一說明四張圖示選項", () => {
+  const bank = context.window.BANK.find(item => item.year === 110);
+  const question = bank.questions.find(item => item.no === 42);
+
+  for (const label of ["（A）判讀", "（B）判讀", "（C）判讀", "（D）判讀"]) {
+    assert.match(question.explain, new RegExp(label));
+  }
+  assert.doesNotMatch(question.explain, /至少有一項條件與題幹證據不符/);
+});
