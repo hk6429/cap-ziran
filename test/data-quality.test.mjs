@@ -76,6 +76,49 @@ test("消化主題回報的四張表格圖均保留完整資料", () => {
   }
 });
 
+test("題目回報的三張圖使用完整版本化資產", () => {
+  const expected = [
+    {
+      bank: context.window.BANK.find(item => item.year === 95 && item.sitting === "second"),
+      no: 25,
+      file: "img/9502/q25-20260731.png",
+      minimum: { width: 800, height: 140 },
+    },
+    {
+      bank: context.window.BANK.find(item => item.year === 95 && item.sitting === "second"),
+      no: 47,
+      file: "img/9502/q47-20260731.png",
+      minimum: { width: 600, height: 400 },
+    },
+    {
+      bank: context.window.BANK.find(item => item.year === 102),
+      no: 33,
+      file: "img/102/q33-20260731.png",
+      minimum: { width: 550, height: 680 },
+    },
+  ];
+
+  for (const { bank, no, file, minimum } of expected) {
+    const question = bank.questions.find(item => item.no === no);
+    assert.equal(question.image, file);
+    const image = pngSize(file);
+    assert.ok(
+      image.width >= minimum.width && image.height >= minimum.height,
+      `${file}: ${JSON.stringify(image)}`,
+    );
+  }
+});
+
+test("104 年第 35 題解析正確辨識四組物質", () => {
+  const bank = context.window.BANK.find(item => item.year === 104);
+  const question = bank.questions.find(item => item.no === 35);
+
+  for (const substance of ["氯氣", "臭氧", "氨氣", "乙醇", "乙酸", "碳酸鈣", "碳酸氫鈉"]) {
+    assert.match(question.explain, new RegExp(substance));
+  }
+  assert.doesNotMatch(question.explain, /氫氣|氯化氫|圖示選項（原題無文字）/);
+});
+
 test("110 年第 42 題逐一說明四張圖示選項", () => {
   const bank = context.window.BANK.find(item => item.year === 110);
   const question = bank.questions.find(item => item.no === 42);
