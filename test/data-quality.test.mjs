@@ -109,6 +109,16 @@ test("題目回報的三張圖使用完整版本化資產", () => {
   }
 });
 
+test("100 年第二次第 28 題使用完整紫外線指數圖", () => {
+  const bank = context.window.BANK.find(item => item.year === 100 && item.sitting === "second");
+  const question = bank.questions.find(item => item.no === 28);
+  const file = "img/10002/q28-20260801.png";
+
+  assert.equal(question.image, file);
+  const image = pngSize(file);
+  assert.ok(image.width >= 900 && image.height >= 550, JSON.stringify(image));
+});
+
 test("104 年第 35 題解析正確辨識四組物質", () => {
   const bank = context.window.BANK.find(item => item.year === 104);
   const question = bank.questions.find(item => item.no === 35);
