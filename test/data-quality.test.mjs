@@ -119,6 +119,56 @@ test("100 年第二次第 28 題使用完整紫外線指數圖", () => {
   assert.ok(image.width >= 900 && image.height >= 550, JSON.stringify(image));
 });
 
+test("103 年第 3 題使用包含 P、Q、R、S 的完整平面鏡圖", () => {
+  const bank = context.window.BANK.find(item => item.year === 103);
+  const question = bank.questions.find(item => item.no === 3);
+  const file = "img/103/q03-20260803.png";
+
+  assert.equal(question.image, file);
+  const image = pngSize(file);
+  assert.ok(image.width >= 900 && image.height >= 500, JSON.stringify(image));
+});
+
+test("92 年第二次第 10 題使用文字完整的碘液測試表", () => {
+  const bank = context.window.BANK.find(item => item.year === 92 && item.sitting === "second");
+  const question = bank.questions.find(item => item.no === 10);
+  const file = "img/9202/q10-20260803.png";
+
+  assert.equal(question.image, file);
+  const image = pngSize(file);
+  assert.ok(image.width >= 1100 && image.height >= 300, JSON.stringify(image));
+});
+
+test("99 年第二次第 6 題保留甲乙丙丁四張鳥嘴分布圖", () => {
+  const bank = context.window.BANK.find(item => item.year === 99 && item.sitting === "second");
+  const question = bank.questions.find(item => item.no === 6);
+  const file = "img/9902/q06-20260803.png";
+
+  assert.equal(question.image, file);
+  const image = pngSize(file);
+  assert.ok(image.width >= 1900 && image.height >= 430, JSON.stringify(image));
+});
+
+test("92 年第一次第 5 題保留完整檢索表與昆蟲圖", () => {
+  const bank = context.window.BANK.find(item => item.year === 92 && item.sitting === "first");
+  const question = bank.questions.find(item => item.no === 5);
+  const file = "img/9201/q05-20260803.png";
+
+  assert.equal(question.image, file);
+  const image = pngSize(file);
+  assert.ok(image.width >= 2400 && image.height >= 800, JSON.stringify(image));
+});
+
+test("98 年第一次第 28 題顯示四條血管的完整含氧量長條圖", () => {
+  const bank = context.window.BANK.find(item => item.year === 98 && item.sitting === "first");
+  const question = bank.questions.find(item => item.no === 28);
+  const file = "img/9801/q28-20260803.png";
+
+  assert.equal(question.image, file);
+  const image = pngSize(file);
+  assert.ok(image.width >= 1100 && image.height >= 1000, JSON.stringify(image));
+});
+
 test("104 年第 35 題解析正確辨識四組物質", () => {
   const bank = context.window.BANK.find(item => item.year === 104);
   const question = bank.questions.find(item => item.no === 35);

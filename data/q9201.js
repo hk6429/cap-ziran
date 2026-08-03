@@ -96,7 +96,7 @@ window.BANK.push({
    ],
    "skill": "圖表判讀",
    "answer": "B",
-   "image": "img/9201/q05.png",
+   "image": "img/9201/q05-20260803.png",
    "stem": "小茹根據表（一）所示之檢索表，可查出圖（一）昆蟲所屬的類別為下列何者？",
    "options": {
     "A": "甲",

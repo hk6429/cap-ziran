@@ -3,6 +3,7 @@ import fs from "node:fs";
 import test from "node:test";
 
 const html = fs.readFileSync(new URL("../index.html", import.meta.url), "utf8");
+const checkHtml = fs.readFileSync(new URL("../check.html", import.meta.url), "utf8");
 
 test("首頁預設十題並提供英文會考版的主要操作", () => {
   assert.match(html, /id="numInput"[^>]*value="10"/);
@@ -43,8 +44,12 @@ test("解析區顯示全體與待加強四選項分布及迷思提示", () => {
 });
 
 test("題庫檔案帶版本參數，部署後不會沿用舊解析快取", () => {
-  assert.match(html, /data\/q103\.js\?v=20260724-natural-analysis/);
   assert.match(html, /data\/q114\.js\?v=20260724-natural-analysis/);
-  assert.match(html, /data\/q9202\.js\?v=20260725-report-image/);
   assert.match(html, /js\/report-client\.js\?v=telegram-report-20260725/);
+
+  for (const file of ["q103", "q9202", "q9902", "q9201", "q9801"]) {
+    const versionedScript = new RegExp(`data/${file}\\.js\\?v=20260803-report-images`);
+    assert.match(html, versionedScript, `首頁缺少 ${file} 新版快取參數`);
+    assert.match(checkHtml, versionedScript, `校對頁缺少 ${file} 新版快取參數`);
+  }
 });
