@@ -16,7 +16,7 @@ export function formatMessage(input) {
   const sitting = clean(p.sitting, 20);
   const year = clean(p.year, 10);
   const lines = [
-    "🚩 自然科題目回報",
+    "會考-自然科題目問題回報",
     "",
     `題目：${clean(p.questionId, 80) || "未提供"}`,
     `來源：${clean(p.era, 20)} ${year}${year ? " 年" : ""}${sitting ? ` ${sitting}` : ""}第 ${clean(p.no, 10)} 題`,
