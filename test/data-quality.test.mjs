@@ -119,6 +119,15 @@ test("100 年第二次第 28 題使用完整紫外線指數圖", () => {
   assert.ok(image.width >= 900 && image.height >= 550, JSON.stringify(image));
 });
 
+test("94 年第二次第 54～56 題使用包含三項實驗結果的完整表九", () => {
+  const bank = context.window.BANK.find(item => item.year === 94 && item.sitting === "second");
+  const file = "img/9402/g54-20260804.png";
+
+  assert.equal(bank.groups.G2.image, file);
+  const image = pngSize(file);
+  assert.ok(image.width >= 1400 && image.height >= 500, JSON.stringify(image));
+});
+
 test("103 年第 3 題使用包含 P、Q、R、S 的完整平面鏡圖", () => {
   const bank = context.window.BANK.find(item => item.year === 103);
   const question = bank.questions.find(item => item.no === 3);
