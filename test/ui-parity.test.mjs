@@ -45,7 +45,7 @@ test("解析區顯示全體與待加強四選項分布及迷思提示", () => {
 
 test("題庫檔案帶版本參數，部署後不會沿用舊解析快取", () => {
   assert.match(html, /data\/q114\.js\?v=20260724-natural-analysis/);
-  assert.match(html, /js\/report-client\.js\?v=telegram-report-20260725/);
+  assert.match(html, /js\/report-client\.js\?v=telegram-report-20260807/);
 
   for (const file of ["q103", "q9202", "q9902", "q9201", "q9801"]) {
     const versionedScript = new RegExp(`data/${file}\\.js\\?v=20260803-report-images`);

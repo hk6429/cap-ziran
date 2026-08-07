@@ -23,9 +23,13 @@
 
   function endpoint(locationLike) {
     const hostname = String(locationLike?.hostname || "");
-    return hostname === "cap-ziran.vercel.app" || hostname.endsWith(".vercel.app")
+    const onCloudflare = hostname === "cap-ziran.pages.dev"
+      || hostname.endsWith(".cap-ziran.pages.dev")
+      || hostname === "localhost"
+      || hostname === "127.0.0.1";
+    return onCloudflare
       ? "/api/report"
-      : "https://cap-ziran.vercel.app/api/report";
+      : "https://cap-ziran.pages.dev/api/report";
   }
 
   async function submit(input, locationLike, fetchImpl) {
